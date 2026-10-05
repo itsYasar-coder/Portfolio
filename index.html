@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <!-- ============================================================
+       YASAR MEMON — Frontend Developer Portfolio
+       Single-file build: HTML5 + Tailwind CSS (CDN) + Vanilla JS
+       ------------------------------------------------------------
+       BEFORE PUBLISHING, REPLACE:
+         1. Social links (GitHub / LinkedIn / Email)  → marked TODO
+         2. Resume file                               → drop your PDF
+            next to this file as "Yasar-Memon-Resume.pdf"
+         3. Profile photo (optional)                  → see About section
+       ============================================================ -->
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- SEO -->
+  <title>Yasar Memon | Frontend Developer</title>
+  <meta name="description" content="Portfolio of Yasar Memon — a Frontend Developer crafting responsive, interactive, and pixel-perfect web experiences with React, JavaScript and modern CSS." />
+  <meta property="og:title" content="Yasar Memon | Frontend Developer" />
+  <meta property="og:description" content="Responsive, interactive, pixel-perfect web experiences built with React & modern CSS." />
+  <meta property="og:type" content="website" />
+
+  <!-- Favicon (inline SVG — gradient "YM" mark) -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%2322d3ee'/%3E%3Cstop offset='1' stop-color='%232563eb'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23g)'/%3E%3Ctext x='32' y='43' font-family='Arial,sans-serif' font-size='28' font-weight='800' fill='white' text-anchor='middle'%3EYM%3C/text%3E%3C/svg%3E" />
+
+  <!-- Fonts: Inter (UI) + JetBrains Mono (code accents) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+  <!-- Tailwind CSS (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#0A0A0F',        // deep navy/black base
+            'ink-soft': '#101018', // slightly lifted surface
+          },
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Custom styles that Tailwind utilities alone can't express -->
+  <style>
+    html { scroll-behavior: smooth; scroll-padding-top: 5.5rem; }
+
+    ::selection { background: rgba(34, 211, 238, .35); color: #fff; }
+
+    /* Slim gradient scrollbar */
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: #0A0A0F; }
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #155e75, #1e3a8a);
+      border-radius: 8px; border: 2px solid #0A0A0F;
+    }
+
+    /* Brand gradient text */
+    .text-gradient {
+      background: linear-gradient(92deg, #22d3ee 0%, #3b82f6 55%, #818cf8 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+
+    /* Glassmorphism surface */
+    .glass {
+      background: rgba(255, 255, 255, .05);
+      -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, .09);
+    }
+
+    /* Blueprint grid backdrop */
+    .bg-grid {
+      background-image:
+        linear-gradient(rgba(148, 163, 184, .055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(148, 163, 184, .055) 1px, transparent 1px);
+      background-size: 46px 46px;
+    }
+
+    /* Scroll-reveal animation */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+    .reveal-delay-1 { transition-delay: .1s; }
+    .reveal-delay-2 { transition-delay: .2s; }
+    .reveal-delay-3 { transition-delay: .3s; }
+
+    /* Floating hero elements */
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+    @keyframes floatSoft { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-9px) rotate(1.5deg); } }
+    .animate-float { animation: float 6s ease-in-out infinite; }
+    .animate-float-delayed { animation: float 7s ease-in-out 1.4s infinite; }
+    .animate-float-slow { animation: floatSoft 8s ease-in-out .8s infinite; }
+
+    /* Pulsing "available" dot */
+    @keyframes pulseDot {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, .55); }
+      60% { box-shadow: 0 0 0 7px rgba(52, 211, 153, 0); }
+    }
+    .pulse-dot { animation: pulseDot 2s ease-out infinite; }
+
+    /* Animated skill bars — fill when parent card is revealed */
+    .skill-bar { height: 6px; border-radius: 9999px; background: rgba(255, 255, 255, .08); overflow: hidden; }
+    .skill-fill {
+      height: 100%; width: 0; border-radius: 9999px;
+      background: linear-gradient(90deg, #22d3ee, #3b82f6);
+      transition: width 1.2s cubic-bezier(.4, 0, .2, 1) .25s;
+    }
+    .reveal.visible .skill-fill { width: var(--target); }
+
+    /* Nav link underline + active state */
+    .nav-link { position: relative; }
+    .nav-link::after {
+      content: ''; position: absolute; left: 0; bottom: -5px; height: 2px; width: 0;
+      border-radius: 2px; background: linear-gradient(90deg, #22d3ee, #3b82f6);
+      transition: width .3s ease;
+    }
+    .nav-link:hover::after, .nav-link.active::after { width: 100%; }
+    .nav-link.active { color: #fff; }
+
+    /* Header turns glassy after scrolling */
+    #siteHeader.nav-scrolled {
+      background: rgba(10, 10, 15, .82);
+      -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255, 255, 255, .06);
+      box-shadow: 0 12px 32px -12px rgba(0, 0, 0, .6);
+    }
+
+    /* Back-to-top button visibility */
+    #backToTop.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
+
+    /* Respect users who prefer reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+
+<body class="bg-ink font-sans text-slate-300 antialiased overflow-x-hidden">
+
+  <!-- ============ AMBIENT BACKDROP (grid + glow orbs) ============ -->
+  <div class="pointer-events-none fixed inset-0 -z-10">
+    <div class="absolute inset-0 bg-grid [mask-image:radial-gradient(ellipse_75%_60%_at_50%_0%,black,transparent)]"></div>
+    <div class="absolute -left-40 -top-40 h-[30rem] w-[30rem] rounded-full bg-cyan-500/10 blur-3xl"></div>
+    <div class="absolute -right-48 top-1/3 h-[32rem] w-[32rem] rounded-full bg-blue-600/10 blur-3xl"></div>
+  </div>
+
+  <!-- ============================ NAVBAR ============================ -->
+  <header id="siteHeader" class="fixed inset-x-0 top-0 z-50 transition-all duration-300">
+    <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-6 md:h-[72px]">
+
+      <!-- Logo -->
+      <a href="#home" class="flex items-center gap-3" aria-label="Yasar Memon — home">
+        <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 text-base font-extrabold text-white shadow-lg shadow-cyan-500/25">YM</span>
+        <span class="hidden text-sm font-semibold tracking-wide text-slate-200 sm:block">Yasar Memon</span>
+      </a>
+
+      <!-- Desktop links -->
+      <nav class="hidden items-center gap-8 md:flex" aria-label="Primary">
+        <a href="#about"    class="nav-link text-sm font-medium text-slate-400 transition-colors hover:text-white">About</a>
+        <a href="#skills"   class="nav-link text-sm font-medium text-slate-400 transition-colors hover:text-white">Skills</a>
+        <a href="#projects" class="nav-link text-sm font-medium text-slate-400 transition-colors hover:text-white">Projects</a>
+        <a href="#contact"  class="nav-link text-sm font-medium text-slate-400 transition-colors hover:text-white">Contact</a>
+        <!-- TODO: place your PDF next to this file as "Yasar-Memon-Resume.pdf" -->
+        <a href="Yasar-Memon-Resume.pdf" download
+           class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-cyan-500/25 transition-all hover:-translate-y-0.5 hover:shadow-cyan-500/40">
+          <i class="fa-solid fa-download text-xs"></i> Resume
+        </a>
+      </nav>
+
+      <!-- Mobile hamburger -->
+      <button id="menuBtn" class="glass flex h-10 w-10 items-center justify-center rounded-xl text-slate-200 transition-colors hover:text-white md:hidden"
+              aria-label="Toggle menu" aria-expanded="false" aria-controls="mobileMenu">
+        <i id="iconOpen" class="fa-solid fa-bars"></i>
+        <i id="iconClose" class="fa-solid fa-xmark hidden"></i>
+      </button>
+    </div>
+
+    <!-- Mobile dropdown menu -->
+    <div id="mobileMenu" class="overflow-hidden transition-[max-height] duration-500 ease-in-out md:hidden" style="max-height: 0px;">
+      <nav class="glass mx-4 mb-4 flex flex-col gap-1 rounded-2xl p-4" aria-label="Mobile">
+        <a href="#about"    class="nav-link rounded-lg px-4 py-3 text-sm font-medium text-slate-300 transition-colors hover:bg-white/5 hover:text-white">About</a>
+        <a href="#skills"   class="nav-link rounded-lg px-4 py-3 text-sm font-medium text-slate-300 transition-colors hover:bg-white/5 hover:text-white">Skills</a>
+        <a href="#projects" class="nav-link rounded-lg px-4 py-3 text-sm font-medium text-slate-300 transition-colors hover:bg-white/5 hover:text-white">Projects</a>
+        <a href="#contact"  class="nav-link rounded-lg px-4 py-3 text-sm font-medium text-slate-300 transition-colors hover:bg-white/5 hover:text-white">Contact</a>
+        <a href="Yasar-Memon-Resume.pdf" download
+           class="mt-2 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-4 py-3 text-sm font-semibold text-white">
+          <i class="fa-solid fa-download text-xs"></i> Download Resume
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============================ HERO ============================ -->
+    <section id="home" class="relative flex min-h-screen items-center overflow-hidden pt-24 pb-16">
+      <!-- Local glow accents -->
+      <div class="pointer-events-none absolute left-1/2 top-24 -z-[5] h-72 w-[42rem] -translate-x-1/2 rounded-full bg-cyan-500/10 blur-3xl"></div>
+
+      <div class="mx-auto grid w-full max-w-6xl items-center gap-16 px-6 lg:grid-cols-2">
+
+        <!-- Left: intro copy -->
+        <div class="text-center lg:text-left">
+          <!-- Availability badge -->
+          <div class="glass mb-7 inline-flex items-center gap-2.5 rounded-full px-4 py-2 text-xs font-medium text-slate-300">
+            <span class="pulse-dot h-2 w-2 rounded-full bg-emerald-400"></span>
+            Available for opportunities
+          </div>
+
+          <h1 class="text-4xl font-extrabold leading-[1.12] tracking-tight text-white sm:text-5xl lg:text-6xl xl:text-7xl">
+            Hi, I'm <span class="text-gradient">Yasar&nbsp;Memon.</span>
+          </h1>
+
+          <p class="mx-auto mt-6 max-w-xl text-base leading-relaxed text-slate-400 md:text-xl lg:mx-0">
+            A <span class="font-semibold text-cyan-300">Frontend Developer</span> crafting responsive, interactive,
+            and pixel-perfect web experiences.
+          </p>
+
+          <!-- CTAs -->
+          <div class="mt-9 flex flex-col items-center gap-4 sm:flex-row sm:justify-center lg:justify-start">
+            <a href="#projects"
+               class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-7 py-3.5 font-semibold text-white shadow-lg shadow-cyan-500/25 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-cyan-500/40 sm:w-auto">
+              <i class="fa-solid fa-code text-sm"></i> View My Work
+            </a>
+            <a href="#contact"
+               class="glass inline-flex w-full items-center justify-center gap-2 rounded-xl px-7 py-3.5 font-semibold text-white transition-all hover:-translate-y-0.5 hover:border-cyan-400/40 hover:text-cyan-300 sm:w-auto">
+              Get In Touch <i class="fa-solid fa-arrow-right text-sm"></i>
+            </a>
+          </div>
+
+          <!-- Quick socials -->
+          <div class="mt-10 flex items-center justify-center gap-4 lg:justify-start">
+            <!-- TODO: replace # with your real profiles -->
+            <a href="https://github.com/yasarmemon" target="_blank" rel="noopener" aria-label="GitHub"
+               class="glass flex h-10 w-10 items-center justify-center rounded-lg text-slate-400 transition-all hover:-translate-y-1 hover:border-cyan-400/40 hover:text-cyan-300">
+              <i class="fa-brands fa-github"></i>
+            </a>
+            <a href="https://www.linkedin.com/in/yasarmemon" target="_blank" rel="noopener" aria-label="LinkedIn"
+               class="glass flex h-10 w-10 items-center justify-center rounded-lg text-slate-400 transition-all hover:-translate-y-1 hover:border-cyan-400/40 hover:text-cyan-300">
+              <i class="fa-brands fa-linkedin-in"></i>
+            </a>
+            <a href="mailto:hello@yasarmemon.dev" aria-label="Email"
+               class="glass flex h-10 w-10 items-center justify-center rounded-lg text-slate-400 transition-all hover:-translate-y-1 hover:border-cyan-400/40 hover:text-cyan-300">
+              <i class="fa-solid fa-envelope"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Right: floating React-style code card -->
+        <div class="reveal reveal-delay-2 relative mx-auto w-full max-w-md lg:max-w-lg">
+          <!-- Glow behind card -->
+          <div class="absolute -inset-6 rounded-[2rem] bg-gradient-to-tr from-cyan-500/20 via-blue-600/15 to-indigo-500/20 blur-2xl"></div>
+
+          <!-- Code window -->
+          <div class="glass animate-float relative overflow-hidden rounded-2xl shadow-2xl shadow-black/50">
+            <!-- Window chrome -->
+            <div class="flex items-center gap-2 border-b border-white/10 bg-white/5 px-4 py-3">
+              <span class="h-3 w-3 rounded-full bg-rose-500/80"></span>
+              <span class="h-3 w-3 rounded-full bg-amber-400/80"></span>
+              <span class="h-3 w-3 rounded-full bg-emerald-400/80"></span>
+              <span class="ml-3 font-mono text-xs text-slate-400">developer.jsx</span>
+            </div>
+            <!-- Code body (hand-highlighted) -->
+            <pre class="overflow-x-auto p-5 font-mono text-[13px] leading-7 text-slate-300"><code><span class="text-slate-500">// ready to build great UIs ✨</span>
+<span class="text-pink-400">const</span> <span class="text-slate-100">developer</span> <span class="text-slate-500">=</span> <span class="text-slate-100">{</span>
+  <span class="text-cyan-300">name</span><span class="text-slate-500">:</span> <span class="text-emerald-300">'Yasar Memon'</span><span class="text-slate-500">,</span>
+  <span class="text-cyan-300">role</span><span class="text-slate-500">:</span> <span class="text-emerald-300">'Frontend Developer'</span><span class="text-slate-500">,</span>
+  <span class="text-cyan-300">stack</span><span class="text-slate-500">:</span> <span class="text-slate-100">[</span><span class="text-emerald-300">'React'</span><span class="text-slate-500">,</span> <span class="text-emerald-300">'JS'</span><span class="text-slate-500">,</span> <span class="text-emerald-300">'CSS'</span><span class="text-slate-100">]</span><span class="text-slate-500">,</span>
+  <span class="text-cyan-300">focus</span><span class="text-slate-500">:</span> <span class="text-emerald-300">'pixel-perfect UI'</span><span class="text-slate-500">,</span>
+  <span class="text-cyan-300">responsive</span><span class="text-slate-500">:</span> <span class="text-amber-300">true</span><span class="text-slate-500">,</span>
+<span class="text-slate-100">}</span><span class="text-slate-500">;</span>
+
+<span class="text-pink-400">while</span> <span class="text-slate-100">(</span><span class="text-cyan-300">learning</span><span class="text-slate-100">)</span> <span class="text-slate-100">{</span> <span class="text-cyan-300">build</span><span class="text-slate-100">()</span><span class="text-slate-500">;</span> <span class="text-slate-100">}</span></code></pre>
+          </div>
+
+          <!-- Floating chips -->
+          <div class="glass animate-float-slow absolute -right-3 -top-5 flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-white shadow-lg shadow-black/40 sm:-right-6">
+            <i class="fa-brands fa-react text-lg text-cyan-400"></i> React
+          </div>
+          <div class="glass animate-float-delayed absolute -bottom-5 -left-3 flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-white shadow-lg shadow-black/40 sm:-left-6">
+            <i class="fa-solid fa-bolt text-amber-400"></i> Pixel-Perfect
+          </div>
+        </div>
+      </div>
+
+      <!-- Scroll cue -->
+      <a href="#about" aria-label="Scroll to about section"
+         class="absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-1 text-slate-500 transition-colors hover:text-cyan-300 md:flex">
+        <span class="font-mono text-[10px] tracking-[0.25em]">SCROLL</span>
+        <i class="fa-solid fa-chevron-down animate-bounce text-xs"></i>
+      </a>
+    </section>
+
+    <!-- ============================ ABOUT ============================ -->
+    <section id="about" class="py-24 md:py-32">
+      <div class="mx-auto max-w-6xl px-6">
+
+        <!-- Section heading -->
+        <div class="reveal mb-14 text-center md:text-left">
+          <p class="font-mono text-sm tracking-[0.2em] text-cyan-400">01 · ABOUT ME</p>
+          <h2 class="mt-3 text-3xl font-bold text-white md:text-4xl">Get To <span class="text-gradient">Know Me</span></h2>
+        </div>
+
+        <div class="grid items-center gap-14 md:grid-cols-5 md:gap-16">
+
+          <!-- Left: glowing profile placeholder -->
+          <div class="reveal md:col-span-2">
+            <div class="relative mx-auto w-fit">
+              <div class="absolute -inset-5 rounded-full bg-gradient-to-tr from-cyan-500/30 to-blue-600/30 blur-2xl"></div>
+              <!-- Gradient ring -->
+              <div class="relative rounded-full bg-gradient-to-tr from-cyan-400 via-blue-500 to-indigo-500 p-[4px] shadow-2xl shadow-cyan-500/20">
+                <!-- TODO: replace this placeholder with <img src="profile.jpg" class="h-full w-full rounded-full object-cover"> -->
+                <div class="flex h-56 w-56 items-center justify-center rounded-full bg-ink-soft sm:h-64 sm:w-64">
+                  <span class="text-gradient text-6xl font-extrabold">YM</span>
+                </div>
+              </div>
+              <!-- Floating badge -->
+              <div class="glass animate-float-slow absolute -bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-xl px-4 py-2 text-sm font-medium text-white shadow-lg shadow-black/40">
+                <i class="fa-brands fa-react text-cyan-400"></i> React Developer
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: bio -->
+          <div class="reveal reveal-delay-1 md:col-span-3">
+            <h3 class="text-2xl font-semibold text-white">
+              Building the web, <span class="text-gradient">one component at a time.</span>
+            </h3>
+            <p class="mt-5 leading-relaxed text-slate-400">
+              I'm a passionate Frontend Developer who loves turning ideas into clean, responsive, and
+              interactive user interfaces. My focus is writing <span class="text-slate-200">clean, reusable
+              React components</span> and styling them into layouts that feel effortless on every screen size —
+              from a 4K monitor down to the smallest phone.
+            </p>
+            <p class="mt-4 leading-relaxed text-slate-400">
+              As a fresher, I bring fresh energy, a strong foundation in
+              <span class="text-slate-200">HTML5, CSS3, JavaScript (ES6+) and React.js</span>, and the discipline
+              to ship pixel-perfect work. I'm currently deepening my skills by building real projects and
+              exploring <span class="text-slate-200">TypeScript &amp; Next.js</span>.
+            </p>
+
+            <!-- Highlights checklist -->
+            <ul class="mt-7 grid gap-3 sm:grid-cols-2">
+              <li class="flex items-center gap-3 text-sm text-slate-300">
+                <i class="fa-solid fa-circle-check text-cyan-400"></i> Mobile-first responsive design
+              </li>
+              <li class="flex items-center gap-3 text-sm text-slate-300">
+                <i class="fa-solid fa-circle-check text-cyan-400"></i> Clean, component-based React code
+              </li>
+              <li class="flex items-center gap-3 text-sm text-slate-300">
+                <i class="fa-solid fa-circle-check text-cyan-400"></i> REST API integration
+              </li>
+              <li class="flex items-center gap-3 text-sm text-slate-300">
+                <i class="fa-solid fa-circle-check text-cyan-400"></i> Git &amp; version control
+              </li>
+            </ul>
+
+            <!-- Quick stats -->
+            <div class="mt-9 grid grid-cols-3 gap-4">
+              <div class="glass rounded-2xl p-4 text-center">
+                <p class="text-gradient text-2xl font-extrabold md:text-3xl">3+</p>
+                <p class="mt-1 text-[11px] font-medium text-slate-400 md:text-xs">Projects Built</p>
+              </div>
+              <div class="glass rounded-2xl p-4 text-center">
+                <p class="text-gradient text-2xl font-extrabold md:text-3xl">8+</p>
+                <p class="mt-1 text-[11px] font-medium text-slate-400 md:text-xs">Technologies</p>
+              </div>
+              <div class="glass rounded-2xl p-4 text-center">
+                <p class="text-gradient text-2xl font-extrabold md:text-3xl">100%</p>
+                <p class="mt-1 text-[11px] font-medium text-slate-400 md:text-xs">Commitment</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ SKILLS ============================ -->
+    <section id="skills" class="py-24 md:py-32">
+      <div class="mx-auto max-w-6xl px-6">
+
+        <!-- Section heading -->
+        <div class="reveal mb-14 text-center md:text-left">
+          <p class="font-mono text-sm tracking-[0.2em] text-cyan-400">02 · SKILLS</p>
+          <h2 class="mt-3 text-3xl font-bold text-white md:text-4xl">Frontend <span class="text-gradient">Toolkit</span></h2>
+          <p class="mt-4 max-w-2xl text-slate-400 md:text-lg">The core technologies I use to design and build modern web interfaces.</p>
+        </div>
+
+        <!-- Core skills: 4 prominent cards -->
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+
+          <!-- HTML5 -->
+          <div class="reveal group glass rounded-2xl p-6 transition-all duration-300 hover:-translate-y-2 hover:border-cyan-400/30 hover:shadow-[0_20px_60px_-20px_rgba(34,211,238,0.35)]">
+            <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500/20 to-rose-500/20 text-2xl text-orange-400 ring-1 ring-white/10 transition-transform duration-300 group-hover:scale-110">
+              <i class="fa-brands fa-html5"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-white">HTML5</h3>
+            <p class="mt-1.5 text-sm leading-relaxed text-slate-400">Semantic, accessible page structure.</p>
+            <div class="mt-5 flex items-center justify-between text-xs font-medium text-slate-500">
+              <span>Proficiency</span><span class="font-mono">92%</span>
+            </div>
+            <div class="skill-bar mt-2"><div class="skill-fill" style="--target: 92%;"></div></div>
+          </div>
+
+          <!-- CSS3 -->
+          <div class="reveal reveal-delay-1 group glass rounded-2xl p-6 transition-all duration-300 hover:-translate-y-2 hover:border-cyan-400/30 hover:shadow-[0_20px_60px_-20px_rgba(34,211,238,0.35)]">
+            <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-sky-500/20 to-blue-600/20 text-2xl text-sky-400 ring-1 ring-white/10 transition-transform duration-300 group-hover:scale-110">
+              <i class="fa-brands fa-css3-alt"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-white">CSS3</h3>
+            <p class="mt-1.5 text-sm leading-relaxed text-slate-400">Flexbox, Grid, animations &amp; responsive layouts.</p>
+            <div class="mt-5 flex items-center justify-between text-xs font-medium text-slate-500">
+              <span>Proficiency</span><span class="font-mono">88%</span>
+            </div>
+            <div class="skill-bar mt-2"><div class="skill-fill" style="--target: 88%;"></div></div>
+          </div>
+
+          <!-- JavaScript -->
+          <div class="reveal reveal-delay-2 group glass rounded-2xl p-6 transition-all duration-300 hover:-translate-y-2 hover:border-cyan-400/30 hover:shadow-[0_20px_60px_-20px_rgba(34,211,238,0.35)]">
+            <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-amber-400/20 to-yellow-500/20 text-2xl text-amber-300 ring-1 ring-white/10 transition-transform duration-300 group-hover:scale-110">
+              <i class="fa-brands fa-js"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-white">JavaScript <span class="text-xs font-medium text-slate-500">(ES6+)</span></h3>
+            <p class="mt-1.5 text-sm leading-relaxed text-slate-400">DOM, async/await, fetch &amp; modern syntax.</p>
+            <div class="mt-5 flex items-center justify-between text-xs font-medium text-slate-500">
+              <span>Proficiency</span><span class="font-mono">82%</span>
+            </div>
+            <div class="skill-bar mt-2"><div class="skill-fill" style="--target: 82%;"></div></div>
+          </div>
+
+          <!-- React -->
+          <div class="reveal reveal-delay-3 group glass rounded-2xl p-6 transition-all duration-300 hover:-translate-y-2 hover:border-cyan-400/30 hover:shadow-[0_20px_60px_-20px_rgba(34,211,238,0.35)]">
+            <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-600/20 text-2xl text-cyan-400 ring-1 ring-white/10 transition-transform duration-300 group-hover:scale-110">
+              <i class="fa-brands fa-react"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-white">React.js</h3>
+            <p class="mt-1.5 text-sm leading-relaxed text-slate-400">Components, hooks, props &amp; state.</p>
+            <div class="mt-5 flex items-center justify-between text-xs font-medium text-slate-500">
+              <span>Proficiency</span><span class="font-mono">78%</span>
+            </div>
+            <div class="skill-bar mt-2"><div class="skill-fill" style="--target: 78%;"></div></div>
+          </div>
+        </div>
+
+        <!-- Bonus skills: subtle row -->
+        <div class="reveal mt-12 flex flex-col items-center gap-5 md:flex-row md:gap-8">
+          <p class="whitespace-nowrap font-mono text-sm text-slate-500">
+            <span class="text-slate-600">$</span> Also familiar with:
+          </p>
+          <ul class="flex flex-wrap items-center justify-center gap-3">
+            <li class="glass flex items-center gap-2 rounded-full px-4 py-2 text-sm text-slate-300 transition-colors hover:border-cyan-400/30 hover:text-white">
+              <i class="fa-brands fa-python text-slate-400"></i> Python
+            </li>
+            <li class="glass flex items-center gap-2 rounded-full px-4 py-2 text-sm text-slate-300 transition-colors hover:border-cyan-400/30 hover:text-white">
+              <i class="fa-solid fa-database text-slate-400"></i> SQL
+            </li>
+            <li class="glass flex items-center gap-2 rounded-full px-4 py-2 text-sm text-slate-300 transition-colors hover:border-cyan-400/30 hover:text-white">
+              <i class="fa-solid fa-chart-column text-slate-400"></i> Power BI
+            </li>
+            <li class="glass flex items-center gap-2 rounded-full px-4 py-2 text-sm text-slate-300 transition-colors hover:border-cyan-400/30 hover:text-white">
+              <i class="fa-solid fa-file-excel text-slate-400"></i> MS Excel
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ PROJECTS ============================ -->
+    <section id="projects" class="py-24 md:py-32">
+      <div class="mx-auto max-w-6xl px-6">
+
+        <!-- Section heading -->
+        <div class="reveal mb-14 text-center md:text-left">
+          <p class="font-mono text-sm tracking-[0.2em] text-cyan-400">03 · PROJECTS</p>
+          <h2 class="mt-3 text-3xl font-bold text-white md:text-4xl">Featured <span class="text-gradient">Projects</span></h2>
+          <p class="mt-4 max-w-2xl text-slate-400 md:text-lg">A selection of things I've designed and built to sharpen my frontend skills.</p>
+        </div>
+
+        <div class="grid gap-8 md:grid-cols-3">
+
+          <!-- ---------- Project 1: Modern E-commerce UI ---------- -->
+          <article class="reveal group glass flex flex-col overflow-hidden rounded-2xl transition-all duration-300 hover:-translate-y-2 hover:border-cyan-400/30 hover:shadow-[0_24px_60px_-20px_rgba(34,211,238,0.3)]">
+            <!-- CSS-built preview mockup (no image file needed) -->
+            <div class="relative h-44 overflow-hidden border-b border-white/5 bg-gradient-to-br from-cyan-500/15 via-blue-600/10 to-transparent p-4 transition-transform duration-500 group-hover:scale-[1.03]">
+              <div class="flex gap-1.5">
+                <span class="h-2.5 w-2.5 rounded-full bg-white/20"></span>
+                <span class="h-2.5 w-2.5 rounded-full bg-white/20"></span>
+                <span class="h-2.5 w-2.5 rounded-full bg-white/20"></span>
+              </div>
+              <div class="mt-3 flex items-center justify-between">
+                <span class="h-2 w-10 rounded bg-white/25"></span>
+                <div class="flex gap-2">
+                  <span class="h-1.5 w-6 rounded bg-white/15"></span>
+                  <span class="h-1.5 w-6 rounded bg-white/15"></span>
+                  <span class="h-1.5 w-6 rounded bg-white/15"></span>
+                </div>
+              </div>
+              <div class="mt-4 grid flex-1 grid-cols-3 gap-2">
+                <div class="flex flex-col gap-1.5 rounded-lg border border-white/10 bg-white/5 p-2">
+                  <i class="fa-solid fa-shirt mx-auto my-1 text-lg text-cyan-300/70"></i>
+                  <span class="h-1.5 w-full rounded bg-white/15"></span>
+                  <span class="h-1.5 w-2/3 rounded bg-cyan-400/40"></span>
+                </div>
+                <div class="flex flex-col gap-1.5 rounded-lg border border-white/10 bg-white/5 p-2">
+                  <i class="fa-solid fa-shoe-prints mx-auto my-1 text-lg text-cyan-300/70"></i>
+                  <span class="h-1.5 w-full rounded bg-white/15"></span>
+                  <span class="h-1.5 w-2/3 rounded bg-cyan-400/40"></span>
+                </div>
+                <div class="flex flex-col gap-1.5 rounded-lg border border-white/10 bg-white/5 p-2">
+                  <i class="fa-solid fa-headphones mx-auto my-1 text-lg text-cyan-300/70"></i>
+                  <span class="h-1.5 w-full rounded bg-white/15"></span>
+                  <span class="h-1.5 w-2/3 rounded bg-cyan-400/40"></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex flex-1 flex-col p-6">
+              <h3 class="text-lg font-semibold text-white transition-colors group-hover:text-cyan-300">Modern E-commerce UI</h3>
+              <p class="mt-2 flex-1 text-sm leading-relaxed text-slate-400">
+                A sleek storefront interface with product grids, hover interactions and a fully
+                responsive layout built component-first.
+              </p>
+              <div class="mt-4 flex flex-wrap gap-2">
+                <span class="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-2.5 py-1 font-mono text-[11px] text-cyan-300">React</span>
+                <span class="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-2.5 py-1 font-mono text-[11px] text-cyan-300">Tailwind</span>
+                <span class="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-2.5 py-1 font-mono text-[11px] text-cyan-300">Responsive</span>
+              </div>
+              <div class="mt-5 flex items-center justify-between border-t border-white/5 pt-4">
+                <!-- TODO: replace # with live demo URL -->
+                <a href="#" class="inline-flex items-center gap-1.5 text-sm font-medium text-cyan-400 transition-colors hover:text-cyan-300">
+                  Live Demo <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                </a>
+                <!-- TODO: replace # with repo URL -->
+                <a href="#" aria-label="GitHub repository — Modern E-commerce UI"
+                   class="glass flex h-9 w-9 items-center justify-center rounded-lg text-slate-400 transition-all hover:-translate-y-0.5 hover:border-cyan-400/40 hover:text-white">
+                  <i class="fa-brands fa-github"></i>
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <!-- ---------- Project 2: Interactive Weather Dashboard ---------- -->
+          <article class="reveal reveal-delay-1 group glass flex flex-col overflow-hidden rounded-2xl transition-all duration-300 hover:-translate-y-2 hover:border-cyan-400/30 hover:shadow-[0_24px_60px_-20px_rgba(34,211,238,0.3)]">
+            <div class="relative h-44 overflow-hidden border-b border-white/5 bg-gradient-to-br from-blue-500/15 via-indigo-600/10 to-transparent p-4 transition-transform duration-500 group-hover:scale-[1.03]">
+              <div class="flex gap-1.5">
+                <span class="h-2.5 w-2.5 rounded-full bg-white/20"></span>
+                <span class="h-2.5 w-2.5 rounded-full bg-white/20"></span>
+                <span class="h-2.5 w-2.5 rounded-full bg-white/20"></span>
+              </div>
+              <div class="flex flex-1 flex-col items-center justify-center gap-1">
+                <i class="fa-solid fa-sun text-3xl text-amber-300 drop-shadow-[0_0_12px_rgba(252,211,77,0.6)]"></i>
+                <p class="font-mono text-2xl font-semibold text-white">28°C</p>
+                <span class="h-1.5 w-16 rounded bg-white/20"></span>
+              </div>
+              <div class="flex justify-center gap-2 pb-1">
+                <span class="h-8 w-8 rounded-lg border border-white/10 bg-white/5"></span>
+                <span class="h-8 w-8 rounded-lg border border-white/10 bg-white/5"></span>
+                <span class="h-8 w-8 rounded-lg border border-white/10 bg-white/5"></span>
+                <span class="h-8 w-8 rounded-lg border border-white/10 bg-white/5"></span>
+              </div>
+            </div>
+
+            <div class="flex flex-1 flex-col p-6">
+              <h3 class="text-lg font-semibold text-white transition-colors group-hover:text-cyan-300">Interactive Weather Dashboard</h3>
+              <p class="mt-2 flex-1 text-sm leading-relaxed text-slate-400">
+                A dynamic dashboard that fetches live conditions from a weather API with
+                search, animated forecasts and graceful error states.
+              </p>
+              <div class="mt-4 flex flex-wrap gap-2">
+                <span class="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-2.5 py-1 font-mono text-[11px] text-cyan-300">JavaScript</span>
+                <span class="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-2.5 py-1 font-mono text-[11px] text-cyan-300">API</span>
+                <span class="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-2.5 py-1 font-mono text-[11px] text-cyan-300">CSS</span>
+              </div>
+              <div class="mt-5 flex items-center justify-between border-t border-white/5 pt-4">
+                <!-- TODO: replace # with live demo URL -->
+                <a href="#" class="inline-flex items-center gap-1.5 text-sm font-medium text-cyan-400 transition-colors hover:text-cyan-300">
+                  Live Demo <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                </a>
+                <!-- TODO: replace # with repo URL -->
+                <a href="#" aria-label="GitHub repository — Weather Dashboard"
+                   class="glass flex h-9 w-9 items-center justify-center rounded-lg text-slate-400 transition-all hover:-translate-y-0.5 hover:border-cyan-400/40 hover:text-white">
+                  <i class="fa-brands fa-github"></i>
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <!-- ---------- Project 3: Personal Portfolio Website ---------- -->
+          <article class="reveal reveal-delay-2 group glass flex flex-col overflow-hidden rounded-2xl transition-all duration-300 hover:-translate-y-2 hover:border-cyan-400/30 hover:shadow-[0_24px_60px_-20px_rgba(34,211,238,0.3)]">
+            <div class="relative h-44 overflow-hidden border-b border-white/5 bg-gradient-to-br from-teal-400/15 via-cyan-600/10 to-transparent p-4 transition-transform duration-500 group-hover:scale-[1.03]">
+              <div class="flex gap-1.5">
+                <span class="h-2.5 w-2.5 rounded-full bg-white/20"></span>
+                <span class="h-2.5 w-2.5 rounded-full bg-white/20"></span>
+                <span class="h-2.5 w-2.5 rounded-full bg-white/20"></span>
+              </div>
+              <div class="flex flex-1 flex-col items-center justify-center gap-2">
+                <div class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-cyan-400 to-blue-600 text-[10px] font-extrabold text-white">YM</div>
+                <span class="h-2 w-24 rounded bg-white/25"></span>
+                <span class="h-1.5 w-16 rounded bg-white/10"></span>
+                <span class="mt-1 h-5 w-20 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600"></span>
+              </div>
+            </div>
+
+            <div class="flex flex-1 flex-col p-6">
+              <h3 class="text-lg font-semibold text-white transition-colors group-hover:text-cyan-300">Personal Portfolio Website</h3>
+              <p class="mt-2 flex-1 text-sm leading-relaxed text-slate-400">
+                The site you're looking at — a dark, glassmorphic single-page portfolio with
+                scroll animations and a fully responsive design.
+              </p>
+              <div class="mt-4 flex flex-wrap gap-2">
+                <span class="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-2.5 py-1 font-mono text-[11px] text-cyan-300">HTML</span>
+                <span class="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-2.5 py-1 font-mono text-[11px] text-cyan-300">CSS</span>
+                <span class="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-2.5 py-1 font-mono text-[11px] text-cyan-300">JS</span>
+              </div>
+              <div class="mt-5 flex items-center justify-between border-t border-white/5 pt-4">
+                <!-- Live demo of a portfolio is the page itself -->
+                <a href="#home" class="inline-flex items-center gap-1.5 text-sm font-medium text-cyan-400 transition-colors hover:text-cyan-300">
+                  Live Demo <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                </a>
+                <!-- TODO: replace # with repo URL -->
+                <a href="#" aria-label="GitHub repository — Portfolio Website"
+                   class="glass flex h-9 w-9 items-center justify-center rounded-lg text-slate-400 transition-all hover:-translate-y-0.5 hover:border-cyan-400/40 hover:text-white">
+                  <i class="fa-brands fa-github"></i>
+                </a>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <!-- More-work pointer -->
+        <p class="reveal mt-12 text-center text-sm text-slate-500">
+          More experiments live on my GitHub —
+          <!-- TODO: replace # with your GitHub profile -->
+          <a href="https://github.com/yasarmemon" target="_blank" rel="noopener"
+             class="font-medium text-cyan-400 transition-colors hover:text-cyan-300">
+            <i class="fa-brands fa-github mr-1"></i>github.com/yasarmemon
+          </a>
+        </p>
+      </div>
+    </section>
+
+    <!-- ============================ CONTACT / FOOTER ============================ -->
+    <section id="contact" class="py-24 md:py-32">
+      <div class="mx-auto max-w-3xl px-6 text-center">
+
+        <div class="reveal">
+          <p class="font-mono text-sm tracking-[0.2em] text-cyan-400">04 · CONTACT</p>
+          <h2 class="mt-3 text-3xl font-bold text-white md:text-5xl">
+            Let's build something <span class="text-gradient">together.</span>
+          </h2>
+          <p class="mx-auto mt-5 max-w-xl leading-relaxed text-slate-400 md:text-lg">
+            My inbox is always open — whether you have an opportunity, a question,
+            or just want to talk frontend. I'll do my best to get back to you!
+          </p>
+        </div>
+
+        <!-- Big contact links -->
+        <div class="reveal reveal-delay-1 mt-12 flex flex-wrap items-start justify-center gap-10 sm:gap-16">
+          <!-- TODO: replace with your real email -->
+          <a href="mailto:hello@yasarmemon.dev" class="group flex flex-col items-center gap-3">
+            <span class="glass flex h-16 w-16 items-center justify-center rounded-2xl text-2xl text-slate-300 transition-all duration-300 hover:-translate-y-1.5 hover:border-cyan-400/40 hover:text-cyan-300 hover:shadow-[0_16px_40px_-12px_rgba(34,211,238,0.4)]">
+              <i class="fa-solid fa-envelope"></i>
+            </span>
+            <span class="text-sm font-medium text-slate-400 transition-colors group-hover:text-white">Email</span>
+          </a>
+          <!-- TODO: replace with your real LinkedIn -->
+          <a href="https://www.linkedin.com/in/yasarmemon" target="_blank" rel="noopener" class="group flex flex-col items-center gap-3">
+            <span class="glass flex h-16 w-16 items-center justify-center rounded-2xl text-2xl text-slate-300 transition-all duration-300 hover:-translate-y-1.5 hover:border-cyan-400/40 hover:text-cyan-300 hover:shadow-[0_16px_40px_-12px_rgba(34,211,238,0.4)]">
+              <i class="fa-brands fa-linkedin-in"></i>
+            </span>
+            <span class="text-sm font-medium text-slate-400 transition-colors group-hover:text-white">LinkedIn</span>
+          </a>
+          <!-- TODO: replace with your real GitHub -->
+          <a href="https://github.com/yasarmemon" target="_blank" rel="noopener" class="group flex flex-col items-center gap-3">
+            <span class="glass flex h-16 w-16 items-center justify-center rounded-2xl text-2xl text-slate-300 transition-all duration-300 hover:-translate-y-1.5 hover:border-cyan-400/40 hover:text-cyan-300 hover:shadow-[0_16px_40px_-12px_rgba(34,211,238,0.4)]">
+              <i class="fa-brands fa-github"></i>
+            </span>
+            <span class="text-sm font-medium text-slate-400 transition-colors group-hover:text-white">GitHub</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer bar -->
+  <footer class="border-t border-white/5 py-8">
+    <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-6 text-sm text-slate-500 sm:flex-row">
+      <p>© <span id="year">2026</span> Yasar Memon. Built with <span class="text-slate-300">HTML</span> &amp; <span class="text-slate-300">Tailwind CSS</span>.</p>
+      <p class="flex items-center gap-1.5">
+        Designed &amp; coded with <i class="fa-solid fa-heart text-xs text-cyan-400"></i> by Yasar Memon
+      </p>
+    </div>
+  </footer>
+
+  <!-- Back-to-top floating button -->
+  <button id="backToTop" aria-label="Back to top"
+          class="glass fixed bottom-6 right-6 z-50 flex h-11 w-11 translate-y-3 items-center justify-center rounded-full text-cyan-300 opacity-0 transition-all duration-300 hover:border-cyan-400/40 hover:text-white">
+    <i class="fa-solid fa-arrow-up"></i>
+  </button>
+
+  <!-- ============================ SCRIPTS ============================ -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      /* ---------- Mobile menu toggle ---------- */
+      const menuBtn    = document.getElementById('menuBtn');
+      const mobileMenu = document.getElementById('mobileMenu');
+      const iconOpen   = document.getElementById('iconOpen');
+      const iconClose  = document.getElementById('iconClose');
+
+      function closeMenu() {
+        mobileMenu.style.maxHeight = '0px';
+        iconOpen.classList.remove('hidden');
+        iconClose.classList.add('hidden');
+        menuBtn.setAttribute('aria-expanded', 'false');
+      }
+
+      menuBtn.addEventListener('click', () => {
+        const isOpen = menuBtn.getAttribute('aria-expanded') === 'true';
+        if (isOpen) {
+          closeMenu();
+        } else {
+          mobileMenu.style.maxHeight = mobileMenu.scrollHeight + 'px';
+          iconOpen.classList.add('hidden');
+          iconClose.classList.remove('hidden');
+          menuBtn.setAttribute('aria-expanded', 'true');
+        }
+      });
+
+      // Close the menu after tapping any link inside it
+      mobileMenu.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
+
+      /* ---------- Sticky header state + back-to-top visibility ---------- */
+      const header    = document.getElementById('siteHeader');
+      const backToTop = document.getElementById('backToTop');
+
+      window.addEventListener('scroll', () => {
+        const y = window.scrollY;
+        header.classList.toggle('nav-scrolled', y > 24);
+        backToTop.classList.toggle('show', y > 500);
+      }, { passive: true });
+
+      backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+      /* ---------- Scroll-reveal animations ---------- */
+      const revealObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+      document.querySelectorAll('.reveal').forEach((el) => revealObserver.observe(el));
+
+      /* ---------- Highlight active nav link while scrolling ---------- */
+      const sections = document.querySelectorAll('section[id]');
+      const navLinks = document.querySelectorAll('.nav-link');
+
+      const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            navLinks.forEach((link) => {
+              link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id);
+            });
+          }
+        });
+      }, { rootMargin: '-45% 0px -50% 0px' });
+
+      sections.forEach((section) => sectionObserver.observe(section));
+
+      /* ---------- Dynamic copyright year ---------- */
+      document.getElementById('year').textContent = new Date().getFullYear();
+    });
+  </script>
+</body>
+</html>
